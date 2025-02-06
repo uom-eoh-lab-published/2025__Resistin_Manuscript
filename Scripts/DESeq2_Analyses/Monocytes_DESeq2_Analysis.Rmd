@@ -48,7 +48,9 @@ dir.create(path = paste(data_folder, '/RNASeq/InHouse', sep = ''),
            showWarnings = F)
 dir.create(path = paste(data_folder, '/RNASeq/InHouse/DESeq2', sep = ''), 
            showWarnings = F)
-dir.create(path = paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons', sep = ''), 
+dir.create(path = paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/', sep = ''), 
+           showWarnings = FALSE)
+dir.create(path = paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons', sep = ''), 
            showWarnings = F)
 
 dir.create(path = paste(figures_folder, '/Monocytes', sep = ''), 
@@ -554,17 +556,17 @@ pca_samples$Hours <- colData(dds)[rownames(pca_samples),'Hours']
 pca_genes <- as.data.frame(pca$rotation)
 pca_genes <- add_column(pca_genes, .before = 'PC1', GeneSymbol = rowData(dds)[rownames(pca_genes),'gene_name'])
 
-dir.create(path = paste(data_folder, '/RNASeq/InHouse/DESeq2/PCs', sep = ''), showWarnings = F)
+dir.create(path = paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/PCs', sep = ''), showWarnings = F)
 
-write.csv(pca_samples, file = paste(data_folder, '/RNASeq/InHouse/DESeq2/PCs/DGE_Samples_PCs_from_rlog_normalised_count_mat.csv', sep = ''), quote = F, row.names = T, col.names = T)
+write.csv(pca_samples, file = paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/PCs/DGE_Samples_PCs_from_rlog_normalised_count_mat.csv', sep = ''), quote = F, row.names = T, col.names = T)
 
-write.csv(pca_genes, file = paste(data_folder, '/RNASeq/InHouse/DESeq2/PCs/DGE_Genes_PCs_from_rlog_normalised_count_mat.csv', sep = ''), quote = F, row.names = T, col.names = T)
+write.csv(pca_genes, file = paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/PCs/DGE_Genes_PCs_from_rlog_normalised_count_mat.csv', sep = ''), quote = F, row.names = T, col.names = T)
 
 
 var_explained_df <- data.frame(PC= paste0("PC",1:28),
                                var_explained=(pca$sdev)^2/sum((pca$sdev)^2))
 
-write.csv(var_explained_df, file = paste(data_folder, '/RNASeq/InHouse/DESeq2/PCs/DGE_PC_variance_explained.csv', sep = ''), quote = FALSE, row.names = FALSE)
+write.csv(var_explained_df, file = paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/PCs/DGE_PC_variance_explained.csv', sep = ''), quote = FALSE, row.names = FALSE)
 
 tot_var_explained <- (var_explained_df$var_explained[1] + 
   var_explained_df$var_explained[2] +
@@ -682,9 +684,7 @@ HGNC_CD_markers_list <- read.csv(
 control <- '0hrs_initial'
 test_groups <- c('6hrs_control', '24hrs_control', '6hrs_LPS', '24hrs_LPS', '6hrs_resistin', '24hrs_resistin')
 
-dir.create(paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/', sep = ''), showWarnings = FALSE)
-
-dir.create(paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_0hrs_initial', sep = ''), showWarnings = FALSE)
+dir.create(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_0hrs_initial', sep = ''), showWarnings = FALSE)
   
 results <- list()
 # Relevel the Comparison factor to set control as the reference level
@@ -695,7 +695,7 @@ dds <- DESeq(dds)
 for (test in setdiff(test_groups, control)) {
     
     name_comparison <- paste("Comparison_", test, "_vs_", control, sep = '')
-    dir.create(paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_0hrs_initial/', name_comparison, sep = ''), showWarnings = FALSE)
+    dir.create(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_0hrs_initial/', name_comparison, sep = ''), showWarnings = FALSE)
     
     set.seed(123)
     
@@ -714,9 +714,9 @@ for (test in setdiff(test_groups, control)) {
     
     results[[name_comparison]] <- res_significant %>% arrange(-Rank)
     
-    write.csv(x = res_significant %>% filter(log2FoldChange > 0) %>% arrange(-Rank), file = paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_0hrs_initial/', name_comparison, '/UP_in_', test, '.csv', sep = ''), row.names = TRUE)
-    write.csv(x = res_significant %>% filter(log2FoldChange < 0) %>% arrange(-Rank), file = paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_0hrs_initial/', name_comparison, '/UP_in_', control, '.csv', sep = ''), row.names = TRUE)
-    write.csv(x = res, file = paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_0hrs_initial/', name_comparison, '/ALL_DEGs.csv', sep = ''), row.names = TRUE)
+    write.csv(x = res_significant %>% filter(log2FoldChange > 0) %>% arrange(-Rank), file = paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_0hrs_initial/', name_comparison, '/UP_in_', test, '.csv', sep = ''), row.names = TRUE)
+    write.csv(x = res_significant %>% filter(log2FoldChange < 0) %>% arrange(-Rank), file = paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_0hrs_initial/', name_comparison, '/UP_in_', control, '.csv', sep = ''), row.names = TRUE)
+    write.csv(x = res, file = paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_0hrs_initial/', name_comparison, '/ALL_DEGs.csv', sep = ''), row.names = TRUE)
 
 }
 ```
@@ -727,7 +727,7 @@ for (test in setdiff(test_groups, control)) {
 control <- '6hrs_control'
 test_groups <- c('24hrs_control', '6hrs_LPS', '24hrs_LPS', '6hrs_resistin', '24hrs_resistin')
 
-dir.create(paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_6hrs_control', sep = ''), showWarnings = FALSE)
+dir.create(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_6hrs_control', sep = ''), showWarnings = FALSE)
   
 results <- list()
 # Relevel the Comparison factor to set control as the reference level
@@ -738,7 +738,7 @@ dds <- DESeq(dds)
 for (test in setdiff(test_groups, control)) {
     
     name_comparison <- paste("Comparison_", test, "_vs_", control, sep = '')
-    dir.create(paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_6hrs_control/', name_comparison, sep = ''), showWarnings = FALSE)
+    dir.create(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_6hrs_control/', name_comparison, sep = ''), showWarnings = FALSE)
     
     set.seed(123)
     
@@ -757,9 +757,9 @@ for (test in setdiff(test_groups, control)) {
     
     results[[name_comparison]] <- res_significant %>% arrange(-Rank)
     
-    write.csv(x = res_significant %>% filter(log2FoldChange > 0) %>% arrange(-Rank), file = paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_6hrs_control/', name_comparison, '/UP_in_', test, '.csv', sep = ''), row.names = TRUE)
-    write.csv(x = res_significant %>% filter(log2FoldChange < 0) %>% arrange(-Rank), file = paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_6hrs_control/', name_comparison, '/UP_in_', control, '.csv', sep = ''), row.names = TRUE)
-    write.csv(x = res, file = paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_6hrs_control/', name_comparison, '/ALL_DEGs.csv', sep = ''), row.names = TRUE)
+    write.csv(x = res_significant %>% filter(log2FoldChange > 0) %>% arrange(-Rank), file = paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_6hrs_control/', name_comparison, '/UP_in_', test, '.csv', sep = ''), row.names = TRUE)
+    write.csv(x = res_significant %>% filter(log2FoldChange < 0) %>% arrange(-Rank), file = paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_6hrs_control/', name_comparison, '/UP_in_', control, '.csv', sep = ''), row.names = TRUE)
+    write.csv(x = res, file = paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_6hrs_control/', name_comparison, '/ALL_DEGs.csv', sep = ''), row.names = TRUE)
 
 }
 ```
@@ -770,7 +770,7 @@ for (test in setdiff(test_groups, control)) {
 control <- '24hrs_control'
 test_groups <- c('6hrs_LPS', '24hrs_LPS', '6hrs_resistin', '24hrs_resistin')
 
-dir.create(paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_24hrs_control/', sep = ''), showWarnings = FALSE)
+dir.create(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_24hrs_control/', sep = ''), showWarnings = FALSE)
   
 results <- list()
 # Relevel the Comparison factor to set control as the reference level
@@ -781,7 +781,7 @@ dds <- DESeq(dds)
 for (test in setdiff(test_groups, control)) {
     
     name_comparison <- paste("Comparison_", test, "_vs_", control, sep = '')
-    dir.create(paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_24hrs_control/', name_comparison, sep = ''), showWarnings = FALSE)
+    dir.create(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_24hrs_control/', name_comparison, sep = ''), showWarnings = FALSE)
     
     set.seed(123)
     
@@ -800,9 +800,9 @@ for (test in setdiff(test_groups, control)) {
     
     results[[name_comparison]] <- res_significant %>% arrange(-Rank)
     
-    write.csv(x = res_significant %>% filter(log2FoldChange > 0) %>% arrange(-Rank), file = paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_24hrs_control/', name_comparison, '/UP_in_', test, '.csv', sep = ''), row.names = TRUE)
-    write.csv(x = res_significant %>% filter(log2FoldChange < 0) %>% arrange(-Rank), file = paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_24hrs_control/', name_comparison, '/UP_in_', control, '.csv', sep = ''), row.names = TRUE)
-    write.csv(x = res, file = paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_24hrs_control/', name_comparison, '/ALL_DEGs.csv', sep = ''), row.names = TRUE)
+    write.csv(x = res_significant %>% filter(log2FoldChange > 0) %>% arrange(-Rank), file = paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_24hrs_control/', name_comparison, '/UP_in_', test, '.csv', sep = ''), row.names = TRUE)
+    write.csv(x = res_significant %>% filter(log2FoldChange < 0) %>% arrange(-Rank), file = paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_24hrs_control/', name_comparison, '/UP_in_', control, '.csv', sep = ''), row.names = TRUE)
+    write.csv(x = res, file = paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_24hrs_control/', name_comparison, '/ALL_DEGs.csv', sep = ''), row.names = TRUE)
 
 }
 ```
@@ -813,7 +813,7 @@ for (test in setdiff(test_groups, control)) {
 control <- '6hrs_LPS'
 test_groups <- c('24hrs_LPS', '6hrs_resistin', '24hrs_resistin')
 
-dir.create(paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_6hrs_LPS/', sep = ''), showWarnings = FALSE)
+dir.create(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_6hrs_LPS/', sep = ''), showWarnings = FALSE)
   
 results <- list()
 # Relevel the Comparison factor to set control as the reference level
@@ -824,7 +824,7 @@ dds <- DESeq(dds)
 for (test in setdiff(test_groups, control)) {
     
     name_comparison <- paste("Comparison_", test, "_vs_", control, sep = '')
-    dir.create(paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_6hrs_LPS/', name_comparison, sep = ''), showWarnings = FALSE)
+    dir.create(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_6hrs_LPS/', name_comparison, sep = ''), showWarnings = FALSE)
     
     set.seed(123)
     
@@ -843,9 +843,9 @@ for (test in setdiff(test_groups, control)) {
     
     results[[name_comparison]] <- res_significant %>% arrange(-Rank)
     
-    write.csv(x = res_significant %>% filter(log2FoldChange > 0) %>% arrange(-Rank), file = paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_6hrs_LPS/', name_comparison, '/UP_in_', test, '.csv', sep = ''), row.names = TRUE)
-    write.csv(x = res_significant %>% filter(log2FoldChange < 0) %>% arrange(-Rank), file = paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_6hrs_LPS/', name_comparison, '/UP_in_', control, '.csv', sep = ''), row.names = TRUE)
-    write.csv(x = res, file = paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_6hrs_LPS/', name_comparison, '/ALL_DEGs.csv', sep = ''), row.names = TRUE)
+    write.csv(x = res_significant %>% filter(log2FoldChange > 0) %>% arrange(-Rank), file = paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_6hrs_LPS/', name_comparison, '/UP_in_', test, '.csv', sep = ''), row.names = TRUE)
+    write.csv(x = res_significant %>% filter(log2FoldChange < 0) %>% arrange(-Rank), file = paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_6hrs_LPS/', name_comparison, '/UP_in_', control, '.csv', sep = ''), row.names = TRUE)
+    write.csv(x = res, file = paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_6hrs_LPS/', name_comparison, '/ALL_DEGs.csv', sep = ''), row.names = TRUE)
 
 }
 ```
@@ -856,7 +856,7 @@ for (test in setdiff(test_groups, control)) {
 control <- '24hrs_LPS'
 test_groups <- c('6hrs_resistin', '24hrs_resistin')
 
-dir.create(paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_24hrs_LPS/', sep = ''), showWarnings = FALSE)
+dir.create(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_24hrs_LPS/', sep = ''), showWarnings = FALSE)
   
 results <- list()
 # Relevel the Comparison factor to set control as the reference level
@@ -867,7 +867,7 @@ dds <- DESeq(dds)
 for (test in setdiff(test_groups, control)) {
     
     name_comparison <- paste("Comparison_", test, "_vs_", control, sep = '')
-    dir.create(paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_24hrs_LPS/', name_comparison, sep = ''), showWarnings = FALSE)
+    dir.create(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_24hrs_LPS/', name_comparison, sep = ''), showWarnings = FALSE)
     
     set.seed(123)
     
@@ -886,9 +886,9 @@ for (test in setdiff(test_groups, control)) {
     
     results[[name_comparison]] <- res_significant %>% arrange(-Rank)
     
-    write.csv(x = res_significant %>% filter(log2FoldChange > 0) %>% arrange(-Rank), file = paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_24hrs_LPS/', name_comparison, '/UP_in_', test, '.csv', sep = ''), row.names = TRUE)
-    write.csv(x = res_significant %>% filter(log2FoldChange < 0) %>% arrange(-Rank), file = paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_24hrs_LPS/', name_comparison, '/UP_in_', control, '.csv', sep = ''), row.names = TRUE)
-    write.csv(x = res, file = paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_24hrs_LPS/', name_comparison, '/ALL_DEGs.csv', sep = ''), row.names = TRUE)
+    write.csv(x = res_significant %>% filter(log2FoldChange > 0) %>% arrange(-Rank), file = paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_24hrs_LPS/', name_comparison, '/UP_in_', test, '.csv', sep = ''), row.names = TRUE)
+    write.csv(x = res_significant %>% filter(log2FoldChange < 0) %>% arrange(-Rank), file = paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_24hrs_LPS/', name_comparison, '/UP_in_', control, '.csv', sep = ''), row.names = TRUE)
+    write.csv(x = res, file = paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_24hrs_LPS/', name_comparison, '/ALL_DEGs.csv', sep = ''), row.names = TRUE)
 
 }
 ```
@@ -900,7 +900,7 @@ for (test in setdiff(test_groups, control)) {
 This script creates a volcano plot of differential expression results, adding log10 transformed p-value and fold change, defining a color scheme, and identifying genes of interest. The plot is then displayed and saved as a PNG file.
 
 ```{r}
-dirs <- list.files(paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_0hrs_initial', sep = ''))
+dirs <- list.files(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_0hrs_initial', sep = ''))
 
 test_groups <- sub("Comparison_(.*?)_vs_.*", "\\1", dirs)
 
@@ -911,9 +911,9 @@ DEGs_DN <- list()
 for (test in test_groups) {
   
   subdir <- dirs[str_detect(dirs, test)]
-  DEGs_ALL[[test]] <- read.csv(paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_0hrs_initial/', subdir, '/ALL_DEGs.csv', sep = ''))
-  DEGs_UP[[test]] <- read.csv(paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_0hrs_initial/', subdir, '/UP_in_', test, '.csv', sep = ''))
-  DEGs_DN[[test]] <- read.csv(paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_0hrs_initial/', subdir, '/UP_in_0hrs_initial.csv', sep = ''))
+  DEGs_ALL[[test]] <- read.csv(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_0hrs_initial/', subdir, '/ALL_DEGs.csv', sep = ''))
+  DEGs_UP[[test]] <- read.csv(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_0hrs_initial/', subdir, '/UP_in_', test, '.csv', sep = ''))
+  DEGs_DN[[test]] <- read.csv(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_0hrs_initial/', subdir, '/UP_in_0hrs_initial.csv', sep = ''))
   
 }
 ```
@@ -1032,7 +1032,7 @@ for (test in test_groups) {
 This script creates a volcano plot of differential expression results, adding log10 transformed p-value and fold change, defining a color scheme, and identifying genes of interest. The plot is then displayed and saved as a PNG file.
 
 ```{r}
-dirs <- list.files(paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_6hrs_control', sep = ''))
+dirs <- list.files(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_6hrs_control', sep = ''))
 
 test_groups <- sub("Comparison_(.*?)_vs_.*", "\\1", dirs)
 
@@ -1043,9 +1043,9 @@ DEGs_DN <- list()
 for (test in test_groups) {
   
   subdir <- dirs[str_detect(dirs, test)]
-  DEGs_ALL[[test]] <- read.csv(paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_6hrs_control/', subdir, '/ALL_DEGs.csv', sep = ''))
-  DEGs_UP[[test]] <- read.csv(paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_6hrs_control/', subdir, '/UP_in_', test, '.csv', sep = ''))
-  DEGs_DN[[test]] <- read.csv(paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_6hrs_control/', subdir, '/UP_in_6hrs_control.csv', sep = ''))
+  DEGs_ALL[[test]] <- read.csv(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_6hrs_control/', subdir, '/ALL_DEGs.csv', sep = ''))
+  DEGs_UP[[test]] <- read.csv(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_6hrs_control/', subdir, '/UP_in_', test, '.csv', sep = ''))
+  DEGs_DN[[test]] <- read.csv(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_6hrs_control/', subdir, '/UP_in_6hrs_control.csv', sep = ''))
   
 }
 ```
@@ -1164,7 +1164,7 @@ for (test in test_groups) {
 This script creates a volcano plot of differential expression results, adding log10 transformed p-value and fold change, defining a color scheme, and identifying genes of interest. The plot is then displayed and saved as a PNG file.
 
 ```{r}
-dirs <- list.files(paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_24hrs_control', sep = ''))
+dirs <- list.files(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_24hrs_control', sep = ''))
 
 test_groups <- sub("Comparison_(.*?)_vs_.*", "\\1", dirs)
 
@@ -1175,9 +1175,9 @@ DEGs_DN <- list()
 for (test in test_groups) {
   
   subdir <- dirs[str_detect(dirs, test)]
-  DEGs_ALL[[test]] <- read.csv(paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_24hrs_control/', subdir, '/ALL_DEGs.csv', sep = ''))
-  DEGs_UP[[test]] <- read.csv(paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_24hrs_control/', subdir, '/UP_in_', test, '.csv', sep = ''))
-  DEGs_DN[[test]] <- read.csv(paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_24hrs_control/', subdir, '/UP_in_24hrs_control.csv', sep = ''))
+  DEGs_ALL[[test]] <- read.csv(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_24hrs_control/', subdir, '/ALL_DEGs.csv', sep = ''))
+  DEGs_UP[[test]] <- read.csv(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_24hrs_control/', subdir, '/UP_in_', test, '.csv', sep = ''))
+  DEGs_DN[[test]] <- read.csv(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_24hrs_control/', subdir, '/UP_in_24hrs_control.csv', sep = ''))
   
 }
 ```
@@ -1296,7 +1296,7 @@ for (test in test_groups) {
 This script creates a volcano plot of differential expression results, adding log10 transformed p-value and fold change, defining a color scheme, and identifying genes of interest. The plot is then displayed and saved as a PNG file.
 
 ```{r}
-dirs <- list.files(paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_6hrs_LPS', sep = ''))
+dirs <- list.files(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_6hrs_LPS', sep = ''))
 
 test_groups <- sub("Comparison_(.*?)_vs_.*", "\\1", dirs)
 
@@ -1307,9 +1307,9 @@ DEGs_DN <- list()
 for (test in test_groups) {
   
   subdir <- dirs[str_detect(dirs, test)]
-  DEGs_ALL[[test]] <- read.csv(paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_6hrs_LPS/', subdir, '/ALL_DEGs.csv', sep = ''))
-  DEGs_UP[[test]] <- read.csv(paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_6hrs_LPS/', subdir, '/UP_in_', test, '.csv', sep = ''))
-  DEGs_DN[[test]] <- read.csv(paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_6hrs_LPS/', subdir, '/UP_in_6hrs_LPS.csv', sep = ''))
+  DEGs_ALL[[test]] <- read.csv(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_6hrs_LPS/', subdir, '/ALL_DEGs.csv', sep = ''))
+  DEGs_UP[[test]] <- read.csv(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_6hrs_LPS/', subdir, '/UP_in_', test, '.csv', sep = ''))
+  DEGs_DN[[test]] <- read.csv(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_6hrs_LPS/', subdir, '/UP_in_6hrs_LPS.csv', sep = ''))
   
 }
 ```
@@ -1428,7 +1428,7 @@ for (test in test_groups) {
 This script creates a volcano plot of differential expression results, adding log10 transformed p-value and fold change, defining a color scheme, and identifying genes of interest. The plot is then displayed and saved as a PNG file.
 
 ```{r}
-dirs <- list.files(paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_24hrs_LPS', sep = ''))
+dirs <- list.files(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_24hrs_LPS', sep = ''))
 
 test_groups <- sub("Comparison_(.*?)_vs_.*", "\\1", dirs)
 
@@ -1439,9 +1439,9 @@ DEGs_DN <- list()
 for (test in test_groups) {
   
   subdir <- dirs[str_detect(dirs, test)]
-  DEGs_ALL[[test]] <- read.csv(paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_24hrs_LPS/', subdir, '/ALL_DEGs.csv', sep = ''))
-  DEGs_UP[[test]] <- read.csv(paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_24hrs_LPS/', subdir, '/UP_in_', test, '.csv', sep = ''))
-  DEGs_DN[[test]] <- read.csv(paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_24hrs_LPS/', subdir, '/UP_in_24hrs_LPS.csv', sep = ''))
+  DEGs_ALL[[test]] <- read.csv(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_24hrs_LPS/', subdir, '/ALL_DEGs.csv', sep = ''))
+  DEGs_UP[[test]] <- read.csv(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_24hrs_LPS/', subdir, '/UP_in_', test, '.csv', sep = ''))
+  DEGs_DN[[test]] <- read.csv(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_24hrs_LPS/', subdir, '/UP_in_24hrs_LPS.csv', sep = ''))
   
 }
 ```
@@ -1575,7 +1575,7 @@ dds <- DESeq(dds, fitType = Best_scoring_fitType)
 ```{r}
 results <- list()
 
-dir.create(paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_rest', sep = ''), showWarnings = FALSE)
+dir.create(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_rest', sep = ''), showWarnings = FALSE)
 
 for (comparison in resultsNames(dds)) {
   
@@ -1596,7 +1596,7 @@ for (comparison in resultsNames(dds)) {
     
   results[[name_comparison]] <- res_significant %>% arrange(-Rank)
     
-    write.csv(x = res_significant %>% filter(log2FoldChange > 0) %>% arrange(-Rank), file = paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_rest/UP_in_', name_condition, '.csv', sep = ''), row.names = TRUE)
+    write.csv(x = res_significant %>% filter(log2FoldChange > 0) %>% arrange(-Rank), file = paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_rest/UP_in_', name_condition, '.csv', sep = ''), row.names = TRUE)
     
 }
 ```
@@ -1606,7 +1606,7 @@ for (comparison in resultsNames(dds)) {
 ### - Loading marker genes
 
 ```{r}
-DEGs_dir <- paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_rest', sep = '')
+DEGs_dir <- paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_rest', sep = '')
 ```
 
 ```{r}
@@ -1617,7 +1617,7 @@ DEGs_UP <- list()
 for (test in test_groups) {
   
   subdir <- dirs[str_detect(dirs, test)]
-  DEGs_UP[[test]] <- read.csv(paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_rest/', '/UP_in_', test, '.csv', sep = ''))
+  DEGs_UP[[test]] <- read.csv(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_rest/', '/UP_in_', test, '.csv', sep = ''))
   DEGs_UP[[test]] <- (DEGs_UP[[test]] %>% arrange(padj))$Gene[1:30]
   
 }
@@ -1723,7 +1723,7 @@ dev.off()
 ### - Loading marker genes
 
 ```{r}
-DEGs_dir <- paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_rest', sep = '')
+DEGs_dir <- paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_rest', sep = '')
 ```
 
 ```{r}
@@ -1734,7 +1734,7 @@ DEGs_UP <- list()
 for (test in test_groups) {
   
   subdir <- dirs[str_detect(dirs, test)]
-  DEGs_UP[[test]] <- read.csv(paste(data_folder, '/RNASeq/InHouse/DESeq2/DEGs_Comparisons/Comparisons_to_rest/', '/UP_in_', test, '.csv', sep = ''))
+  DEGs_UP[[test]] <- read.csv(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_rest/', '/UP_in_', test, '.csv', sep = ''))
   DEGs_UP[[test]] <- (DEGs_UP[[test]] %>% arrange(padj))$Gene[1:100]
   
 }
