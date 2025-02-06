@@ -38,13 +38,13 @@ git clone https://github.com/uom-eoh-lab-published/2025__Resistin_Manuscript.git
 
 ```
 cd 2025__Resistin_Manuscript/
-wget https://data.mendeley.com/public-files/datasets/vcsyd7ns8f/files/b557a3ee-1054-4270-82ee-2aa78cd820cb/file_downloaded -O Data.zip
+wget link -O Data.zip
 unzip Data.zip
 ```
 
 3) To ensure reproducibility run as follows:
 
-    Please verify that your R and packages version match those used to generate figures in the manuscript - [Check exemplar session info](https://github.com/uom-eoh-lab-published/2025__Resistin_Manuscript/blob/main/Scripts/Monocytes/Monocytes_DESeq2_Analysis.txt)  
+    Please verify that your R and packages version match those used to generate figures in the manuscript - [Check exemplar session info](https://github.com/uom-eoh-lab-published/2025__Resistin_Manuscript/blob/main/Scripts/DESeq2_Analyses/Monocytes_DESeq2_Analysis.txt)  
 
 ---
 
