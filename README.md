@@ -36,7 +36,7 @@ This is the code repository for the Resistin CMML manuscript submitted in 2025.
 git clone https://github.com/uom-eoh-lab-published/2025__Resistin_Manuscript.git
 ```
 
-2) Access the cloned directory, download and decompress the processed input data deposited in the following Mendeley Data repository: [Link to repository](https://doi.org/10.17632/vcsyd7ns8f)
+1) Access the cloned directory, download and decompress the processed input data deposited in the following Mendeley Data repository: [Link to repository]()
 
 ```
 cd 2025__Resistin_Manuscript/
