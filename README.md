@@ -46,7 +46,9 @@ unzip Data.zip
 
 3) To ensure reproducibility run as follows:
 
-    Please verify that your R and packages version match those used to generate figures in the manuscript - [Check exemplar session info](https://github.com/uom-eoh-lab-published/2025__Resistin_Manuscript/blob/main/Scripts/DESeq2_Analyses/Monocytes_DESeq2_Analysis.txt)  
+  - Please verify that your R and packages version match those used to generate figures in the manuscript - [Check exemplar session info](https://github.com/uom-eoh-lab-published/2025__Resistin_Manuscript/blob/main/Scripts/DESeq2_Analyses/Monocytes_DESeq2_Analysis.txt)  
+
+  - Bash is only need if processing raw sequencing files deposited on GEO  
 
 ---
 
