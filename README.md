@@ -5,6 +5,8 @@
 
 ![Static Badge](https://img.shields.io/badge/v4.3.3-blue?style=flat&logo=R)
 &nbsp;
+[![Bash](https://img.shields.io/badge/Bash-4EAA25?logo=gnubash&logoColor=fff)]
+&nbsp;  
 
 ---
 
