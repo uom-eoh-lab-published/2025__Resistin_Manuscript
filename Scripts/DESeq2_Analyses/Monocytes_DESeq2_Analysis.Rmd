@@ -307,8 +307,8 @@ if (file.exists(gencode_gene_info_df.filename)) {
 
 ```{r}
 Samples_metadata <- read.csv(paste(data_folder, '/RNASeq/InHouse/Metadata/Monocyte_samples_metadata.csv', sep = ''), row.names = 'Sample')
-Samples_metadata$Comparison <- factor(Samples_metadata$Comparison)
-Samples_metadata$Comparison <- relevel(Samples_metadata$Comparison, ref = "0hrs_initial")
+Samples_metadata$Condition <- factor(Samples_metadata$Condition)
+Samples_metadata$Condition <- relevel(Samples_metadata$Condition, ref = "0hrs_initial")
 ```
 
 # 3) Importing and grouping raw counts
@@ -379,7 +379,7 @@ dds <- DESeqDataSetFromTximport(
   txi = TXI.Genes, 
   colData = Samples_metadata,
   rowData = Genes_annotation_metadata[rownames(TXI.Genes$counts),], 
-  design = ~ Comparison
+  design = ~ Condition
 )
 ```
 
@@ -457,7 +457,7 @@ This script performs differential expression analysis using both parametric and 
 
 ```{r echo=TRUE, fig.align='center', fig.pos='H', fig.height=5, fig.width=6}
 # Create DESeqDataSet and perform DESeq analysis with parametric fit
-dds_parametric <- DESeqDataSetFromTximport(txi = TXI.Genes, colData = Samples_metadata, rowData = Genes_annotation_metadata[rownames(TXI.Genes$counts),], design = ~ Comparison)
+dds_parametric <- DESeqDataSetFromTximport(txi = TXI.Genes, colData = Samples_metadata, rowData = Genes_annotation_metadata[rownames(TXI.Genes$counts),], design = ~ Condition)
 dds_parametric <- estimateSizeFactors(dds_parametric)
 dds_parametric <- dds_parametric[unique_genes,]
 dds_parametric <- DESeq(dds_parametric, fitType = "parametric")
@@ -469,7 +469,7 @@ hist(x = Residuals_parametric, xlim = c(-20,10))
 Median_Absolute_Residual_parametric <- median(abs(Residuals_parametric))
 
 # Create DESeqDataSet and perform DESeq analysis with local fit
-dds_local <- DESeqDataSetFromTximport(txi = TXI.Genes, colData = Samples_metadata, rowData= Genes_annotation_metadata[rownames(TXI.Genes$counts),], design = ~ Comparison)
+dds_local <- DESeqDataSetFromTximport(txi = TXI.Genes, colData = Samples_metadata, rowData= Genes_annotation_metadata[rownames(TXI.Genes$counts),], design = ~ Condition)
 dds_local <- estimateSizeFactors(dds_local)
 dds_local <- dds_local[unique_genes,]
 dds_local <- DESeq(dds_local, fitType = "local")
@@ -492,7 +492,7 @@ dds <- DESeqDataSetFromTximport(
   txi = TXI.Genes, 
   colData = Samples_metadata,
   rowData = Genes_annotation_metadata[rownames(TXI.Genes$counts),], 
-  design = ~ Comparison
+  design = ~ Condition
 )
 
 # Estimate size factors
@@ -549,7 +549,7 @@ select <- order(rv, decreasing=TRUE)[seq_len(min(500, length(rv)))]
 pca <- prcomp(t(assay(rlog)[select,]))
 
 pca_samples <- as.data.frame(pca$x)
-pca_samples$Comparison <- colData(dds)[rownames(pca_samples),'Comparison']
+pca_samples$Condition <- colData(dds)[rownames(pca_samples),'Condition']
 pca_samples$Donor <- colData(dds)[rownames(pca_samples),'Donor']
 pca_samples$Hours <- colData(dds)[rownames(pca_samples),'Hours']
 
@@ -574,12 +574,12 @@ tot_var_explained <- (var_explained_df$var_explained[1] +
 
 dir.create(path = './Results/Figures', showWarnings = F)
 
-pca_samples$Comparison <- factor(pca_samples$Comparison, levels = c('0hrs_initial', '6hrs_control', '24hrs_control', '6hrs_LPS', '24hrs_LPS', '6hrs_resistin', '24hrs_resistin'))
+pca_samples$Condition <- factor(pca_samples$Condition, levels = c('0hrs_initial', '6hrs_control', '24hrs_control', '6hrs_LPS', '24hrs_LPS', '6hrs_resistin', '24hrs_resistin'))
 pca_samples$Hours <- factor(pca_samples$Hours, levels = c('0hrs', '6hrs', '24hrs'))
 
 png(filename = './Figures/Monocytes/PCA_from_rlog_mat.png', width = 1024*1.6, height = 1024*1.6*0.66, units = 'px', res = 300)
 
-plot <- ggplot(pca_samples, aes(x=PC1, y=PC2, colour=Comparison, shape=Hours)) + geom_point(size=2) + scale_colour_manual(values = c('0hrs_initial' = '#A4BECE',
+plot <- ggplot(pca_samples, aes(x=PC1, y=PC2, colour=Condition, shape=Hours)) + geom_point(size=2) + scale_colour_manual(values = c('0hrs_initial' = '#A4BECE',
                                           '6hrs_control' = '#669bbc',
                                           '24hrs_control' = '#003049',
                                           '6hrs_LPS' = '#87c38f',
@@ -593,7 +593,7 @@ dev.off()
 
 pdf(file = './Figures/Monocytes/PCA_from_rlog_mat.pdf', width = 7, height = 5)
 
-plot <- ggplot(pca_samples, aes(x=PC1, y=PC2, colour=Comparison, shape=Hours)) + geom_point(size = 3) + scale_colour_manual(values = c('0hrs_initial' = '#A4BECE',
+plot <- ggplot(pca_samples, aes(x=PC1, y=PC2, colour=Condition, shape=Hours)) + geom_point(size = 3) + scale_colour_manual(values = c('0hrs_initial' = '#A4BECE',
                                           '6hrs_control' = '#669bbc',
                                           '24hrs_control' = '#003049',
                                           '6hrs_LPS' = '#87c38f',
@@ -626,7 +626,7 @@ With legend
 
 ```{r}
 fig <- plot_ly(pca_samples, 
-               x = ~PC2, y = ~PC1, z = ~PC3, color = ~Comparison, 
+               x = ~PC2, y = ~PC1, z = ~PC3, color = ~Condition, 
                colors = c('0hrs_initial' = '#A4BECE',
                                           '6hrs_control' = '#669bbc',
                                           '24hrs_control' = '#003049',
@@ -688,19 +688,19 @@ dir.create(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons
   
 results <- list()
 # Relevel the Comparison factor to set control as the reference level
-dds$Comparison <- relevel(dds$Comparison, control)
+dds$Condition <- relevel(dds$Condition, control)
 dds <- DESeq(dds)
   
 # Loop through each comparison in the Comparison factor except control
 for (test in setdiff(test_groups, control)) {
     
-    name_comparison <- paste("Comparison_", test, "_vs_", control, sep = '')
+    name_comparison <- paste("Condition_", test, "_vs_", control, sep = '')
     dir.create(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_0hrs_initial/', name_comparison, sep = ''), showWarnings = FALSE)
     
     set.seed(123)
     
     # Explicitly set the contrast
-    res <- results(dds, contrast = c("Comparison", test, control), filterFun = ihw)
+    res <- results(dds, contrast = c("Condition", test, control), filterFun = ihw)
     res <- as.data.frame(res)
     res <- add_column(.data = res, .before = 'baseMean', Gene = rowData(dds)[which(rowData(dds)$gene_id == rownames(res)), 'gene_name'])
     
@@ -731,19 +731,19 @@ dir.create(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons
   
 results <- list()
 # Relevel the Comparison factor to set control as the reference level
-dds$Comparison <- relevel(dds$Comparison, control)
+dds$Condition <- relevel(dds$Condition, control)
 dds <- DESeq(dds)
   
 # Loop through each comparison in the Comparison factor except control
 for (test in setdiff(test_groups, control)) {
     
-    name_comparison <- paste("Comparison_", test, "_vs_", control, sep = '')
+    name_comparison <- paste("Condition_", test, "_vs_", control, sep = '')
     dir.create(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_6hrs_control/', name_comparison, sep = ''), showWarnings = FALSE)
     
     set.seed(123)
     
     # Explicitly set the contrast
-    res <- results(dds, contrast = c("Comparison", test, control), filterFun = ihw)
+    res <- results(dds, contrast = c("Condition", test, control), filterFun = ihw)
     res <- as.data.frame(res)
     res <- add_column(.data = res, .before = 'baseMean', Gene = rowData(dds)[which(rowData(dds)$gene_id == rownames(res)), 'gene_name'])
     
@@ -774,19 +774,19 @@ dir.create(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons
   
 results <- list()
 # Relevel the Comparison factor to set control as the reference level
-dds$Comparison <- relevel(dds$Comparison, control)
+dds$Condition <- relevel(dds$Condition, control)
 dds <- DESeq(dds)
   
 # Loop through each comparison in the Comparison factor except control
 for (test in setdiff(test_groups, control)) {
     
-    name_comparison <- paste("Comparison_", test, "_vs_", control, sep = '')
+    name_comparison <- paste("Condition_", test, "_vs_", control, sep = '')
     dir.create(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_24hrs_control/', name_comparison, sep = ''), showWarnings = FALSE)
     
     set.seed(123)
     
     # Explicitly set the contrast
-    res <- results(dds, contrast = c("Comparison", test, control), filterFun = ihw)
+    res <- results(dds, contrast = c("Condition", test, control), filterFun = ihw)
     res <- as.data.frame(res)
     res <- add_column(.data = res, .before = 'baseMean', Gene = rowData(dds)[which(rowData(dds)$gene_id == rownames(res)), 'gene_name'])
     
@@ -817,19 +817,19 @@ dir.create(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons
   
 results <- list()
 # Relevel the Comparison factor to set control as the reference level
-dds$Comparison <- relevel(dds$Comparison, control)
+dds$Condition <- relevel(dds$Condition, control)
 dds <- DESeq(dds)
   
 # Loop through each comparison in the Comparison factor except control
 for (test in setdiff(test_groups, control)) {
     
-    name_comparison <- paste("Comparison_", test, "_vs_", control, sep = '')
+    name_comparison <- paste("Condition_", test, "_vs_", control, sep = '')
     dir.create(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_6hrs_LPS/', name_comparison, sep = ''), showWarnings = FALSE)
     
     set.seed(123)
     
     # Explicitly set the contrast
-    res <- results(dds, contrast = c("Comparison", test, control), filterFun = ihw)
+    res <- results(dds, contrast = c("Condition", test, control), filterFun = ihw)
     res <- as.data.frame(res)
     res <- add_column(.data = res, .before = 'baseMean', Gene = rowData(dds)[which(rowData(dds)$gene_id == rownames(res)), 'gene_name'])
     
@@ -860,19 +860,19 @@ dir.create(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons
   
 results <- list()
 # Relevel the Comparison factor to set control as the reference level
-dds$Comparison <- relevel(dds$Comparison, control)
+dds$Condition <- relevel(dds$Condition, control)
 dds <- DESeq(dds)
   
 # Loop through each comparison in the Comparison factor except control
 for (test in setdiff(test_groups, control)) {
     
-    name_comparison <- paste("Comparison_", test, "_vs_", control, sep = '')
+    name_comparison <- paste("Condition_", test, "_vs_", control, sep = '')
     dir.create(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_24hrs_LPS/', name_comparison, sep = ''), showWarnings = FALSE)
     
     set.seed(123)
     
     # Explicitly set the contrast
-    res <- results(dds, contrast = c("Comparison", test, control), filterFun = ihw)
+    res <- results(dds, contrast = c("Condition", test, control), filterFun = ihw)
     res <- as.data.frame(res)
     res <- add_column(.data = res, .before = 'baseMean', Gene = rowData(dds)[which(rowData(dds)$gene_id == rownames(res)), 'gene_name'])
     
@@ -902,7 +902,7 @@ This script creates a volcano plot of differential expression results, adding lo
 ```{r}
 dirs <- list.files(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_0hrs_initial', sep = ''))
 
-test_groups <- sub("Comparison_(.*?)_vs_.*", "\\1", dirs)
+test_groups <- sub("Condition_(.*?)_vs_.*", "\\1", dirs)
 
 DEGs_ALL <- list()
 DEGs_UP <- list()
@@ -1036,7 +1036,7 @@ This script creates a volcano plot of differential expression results, adding lo
 ```{r}
 dirs <- list.files(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_6hrs_control', sep = ''))
 
-test_groups <- sub("Comparison_(.*?)_vs_.*", "\\1", dirs)
+test_groups <- sub("Condition_(.*?)_vs_.*", "\\1", dirs)
 
 DEGs_ALL <- list()
 DEGs_UP <- list()
@@ -1170,7 +1170,7 @@ This script creates a volcano plot of differential expression results, adding lo
 ```{r}
 dirs <- list.files(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_24hrs_control', sep = ''))
 
-test_groups <- sub("Comparison_(.*?)_vs_.*", "\\1", dirs)
+test_groups <- sub("Condition_(.*?)_vs_.*", "\\1", dirs)
 
 DEGs_ALL <- list()
 DEGs_UP <- list()
@@ -1304,7 +1304,7 @@ This script creates a volcano plot of differential expression results, adding lo
 ```{r}
 dirs <- list.files(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_6hrs_LPS', sep = ''))
 
-test_groups <- sub("Comparison_(.*?)_vs_.*", "\\1", dirs)
+test_groups <- sub("Condition_(.*?)_vs_.*", "\\1", dirs)
 
 DEGs_ALL <- list()
 DEGs_UP <- list()
@@ -1438,7 +1438,7 @@ This script creates a volcano plot of differential expression results, adding lo
 ```{r}
 dirs <- list.files(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/Comparisons_to_24hrs_LPS', sep = ''))
 
-test_groups <- sub("Comparison_(.*?)_vs_.*", "\\1", dirs)
+test_groups <- sub("Condition_(.*?)_vs_.*", "\\1", dirs)
 
 DEGs_ALL <- list()
 DEGs_UP <- list()
@@ -1575,7 +1575,7 @@ for (test in test_groups) {
 dds = DESeqDataSetFromTximport(txi = TXI.Genes, 
                                colData = Samples_metadata,
                                rowData = Genes_annotation_metadata[rownames(TXI.Genes$counts),], 
-                               design = ~0 + Comparison)
+                               design = ~0 + Condition)
 dds <- estimateSizeFactors(dds)
 dds <- dds[unique_genes,]
 dds <- DESeq(dds, fitType = Best_scoring_fitType)
@@ -1589,8 +1589,8 @@ dir.create(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons
 
 for (comparison in resultsNames(dds)) {
   
-  name_condition <- gsub("Comparison", "", comparison)
-  name_comparison <- paste("Comparison_", name_condition, "_vs_ALL", sep = '')
+  name_condition <- gsub("Condition", "", comparison)
+  name_comparison <- paste("Condition_", name_condition, "_vs_ALL", sep = '')
   
   res <- results(dds, contrast = list(c(comparison),setdiff(resultsNames(dds), comparison)), listValues=c(1, -1/7), filterFun = ihw)
   res <- as.data.frame(res)
@@ -1653,11 +1653,11 @@ Scaled_RLog_results_mat__subset <- t(Scaled_RLog_results_mat__subset)
 
 # Prepare phenotype data
 Phenotype_identity <- data.frame(row.names = colnames(dds))
-Phenotype_identity$Comparison <- dds$Comparison
-Phenotype_identity$Comparison <- factor(Phenotype_identity$Comparison, levels = c('0hrs_initial', '6hrs_control', '24hrs_control', '6hrs_LPS', '24hrs_LPS', '6hrs_resistin', '24hrs_resistin'))
+Phenotype_identity$Condition <- dds$Condition
+Phenotype_identity$Condition <- factor(Phenotype_identity$Condition, levels = c('0hrs_initial', '6hrs_control', '24hrs_control', '6hrs_LPS', '24hrs_LPS', '6hrs_resistin', '24hrs_resistin'))
 
 # Define colors for annotations
-colors_annotation <- list(Comparison = c('0hrs_initial' = '#A4BECE',
+colors_annotation <- list(Condition = c('0hrs_initial' = '#A4BECE',
                                          '6hrs_control' = '#669bbc',
                                          '24hrs_control' = '#003049',
                                          '6hrs_LPS' = '#87c38f',
@@ -1670,7 +1670,7 @@ ha <- rowAnnotation(df = Phenotype_identity, col = colors_annotation,
                     gp = gpar(lwd = 0.5, col = 'white'),
                     simple_anno_size = unit(0.25, 'cm'),
                     show_annotation_name = FALSE, show_legend = FALSE,
-                    annotation_legend_param = list(Comparison = list(direction = "horizontal")))
+                    annotation_legend_param = list(Condition = list(direction = "horizontal")))
 
 # Define heatmap colors and breaks
 breaks_val <- seq(from = -1.5, to = 2, length.out = 13)
@@ -1686,7 +1686,7 @@ Heatmap_genes <- Heatmap(Scaled_RLog_results_mat__subset, name = 'Scaled\nExpres
                             show_column_names = F,
                             cluster_columns = TRUE,
                             cluster_rows = FALSE,
-                            row_split = Phenotype_identity$Comparison,
+                            row_split = Phenotype_identity$Condition,
                             border = TRUE,
                             cluster_row_slices = TRUE,
                             row_gap = unit(0.05, 'cm'),
@@ -1770,11 +1770,11 @@ Scaled_RLog_results_mat__subset <- t(Scaled_RLog_results_mat__subset)
 
 # Prepare phenotype data
 Phenotype_identity <- data.frame(row.names = colnames(dds))
-Phenotype_identity$Comparison <- dds$Comparison
-Phenotype_identity$Comparison <- factor(Phenotype_identity$Comparison, levels = c('0hrs_initial', '6hrs_control', '24hrs_control', '6hrs_LPS', '24hrs_LPS', '6hrs_resistin', '24hrs_resistin'))
+Phenotype_identity$Condition <- dds$Condition
+Phenotype_identity$Condition <- factor(Phenotype_identity$Condition, levels = c('0hrs_initial', '6hrs_control', '24hrs_control', '6hrs_LPS', '24hrs_LPS', '6hrs_resistin', '24hrs_resistin'))
 
 # Define colors for annotations
-colors_annotation <- list(Comparison = c('0hrs_initial' = '#A4BECE',
+colors_annotation <- list(Condition = c('0hrs_initial' = '#A4BECE',
                                          '6hrs_control' = '#669bbc',
                                          '24hrs_control' = '#003049',
                                          '6hrs_LPS' = '#87c38f',
@@ -1787,7 +1787,7 @@ ha <- rowAnnotation(df = Phenotype_identity, col = colors_annotation,
                     gp = gpar(lwd = 0.5, col = 'white'),
                     simple_anno_size = unit(0.25, 'cm'),
                     show_annotation_name = FALSE, show_legend = FALSE,
-                    annotation_legend_param = list(Comparison = list(direction = "horizontal")))
+                    annotation_legend_param = list(Condition = list(direction = "horizontal")))
 
 # Define heatmap colors and breaks
 breaks_val <- seq(from = -1.5, to = 2, length.out = 13)
@@ -1803,7 +1803,7 @@ Heatmap_genes <- Heatmap(Scaled_RLog_results_mat__subset, name = 'Scaled\nExpres
                             show_column_names = F,
                             cluster_columns = TRUE,
                             cluster_rows = FALSE,
-                            row_split = Phenotype_identity$Comparison,
+                            row_split = Phenotype_identity$Condition,
                             border = TRUE,
                             cluster_row_slices = TRUE,
                             row_gap = unit(0.05, 'cm'),

@@ -167,7 +167,7 @@ for (comparison in Comparisons) {
 
   dirs <- list.files(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/', comparison, sep = ''))
   
-  test_groups <- sub("Comparison_(.*?)_vs_.*", "\\1", dirs)
+  test_groups <- sub("Condition_(.*?)_vs_.*", "\\1", dirs)
   
   for (test in test_groups) {
     
@@ -189,7 +189,7 @@ for (comparison in Comparisons) {
   
   dirs <- list.files(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/', comparison, sep = ''))
   
-  test_groups <- sub("Comparison_(.*?)_vs_.*", "\\1", dirs)
+  test_groups <- sub("Condition_(.*?)_vs_.*", "\\1", dirs)
   
   for (test in test_groups) {
   
@@ -221,7 +221,7 @@ for (comparison in Comparisons) {
   
   dirs <- list.files(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/', comparison, sep = ''))
   
-  test_groups <- sub("Comparison_(.*?)_vs_.*", "\\1", dirs)
+  test_groups <- sub("Condition_(.*?)_vs_.*", "\\1", dirs)
   
   for (test in test_groups) {
     
@@ -276,7 +276,7 @@ for (comparison in Comparisons) {
   
   dirs <- list.files(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/', comparison, sep = ''))
   
-  test_groups <- sub("Comparison_(.*?)_vs_.*", "\\1", dirs)
+  test_groups <- sub("Condition_(.*?)_vs_.*", "\\1", dirs)
   
   for (test in test_groups) {
   
@@ -331,7 +331,7 @@ for (comparison in Comparisons) {
   
   dirs <- list.files(paste(data_folder, '/RNASeq/InHouse/DESeq2/Monocytes/DEGs_Comparisons/', comparison, sep = ''))
   
-  test_groups <- sub("Comparison_(.*?)_vs_.*", "\\1", dirs)
+  test_groups <- sub("Condition_(.*?)_vs_.*", "\\1", dirs)
   
   for (test in test_groups) {
   
