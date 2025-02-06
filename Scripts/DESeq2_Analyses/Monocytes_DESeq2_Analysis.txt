@@ -65,6 +65,6 @@ loaded via a namespace (and not attached):
  [88] dbplyr_2.5.0             png_0.1-8                bdsmatrix_1.3-7         
  [91] XML_3.99-0.18            parallel_4.3.3           MatrixModels_0.5-3      
  [94] blob_1.2.4               prettyunits_1.2.0        bitops_1.0-9            
- [97] mvtnorm_1.3-3            viridisLite_0.4.2        slam_0.1-55             
+ [97] mvtnorm_1.3-3            slam_0.1-55              viridisLite_0.4.2       
 [100] crayon_1.5.3             GetoptLong_1.0.5         rlang_1.1.4             
 [103] KEGGREST_1.42.0         
