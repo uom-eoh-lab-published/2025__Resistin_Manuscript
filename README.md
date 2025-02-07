@@ -13,7 +13,6 @@
 ## General Description: 
 **First Author:** Nathan Hull (nathan.hull@manchester.ac.uk)  
 **Correspondance:**    
-Daniel Wiseman (daniel.wiseman@manchester.ac.uk),  
 Kiran Batta (kiran.batta@manchester.ac.uk)   
 **Disease:** Chronic Myelomonocytic Leukemia (CMML)  
 
@@ -36,11 +35,11 @@ This is the code repository for the Resistin CMML manuscript submitted in 2025.
 git clone https://github.com/uom-eoh-lab-published/2025__Resistin_Manuscript.git
 ```
 
-1) Access the cloned directory, download and decompress the processed input data deposited in the following Mendeley Data repository: [Link to repository]()
+1) Access the cloned directory, download and decompress the processed input data deposited in the following Mendeley Data repository: [Link to repository](https://data.mendeley.com/preview/y43wrx67yj)
 
 ```
 cd 2025__Resistin_Manuscript/
-wget link -O Data.zip
+wget https://downloads.data.mendeley.com/downloads/3ed80b4a-0f04-4a7f-9ee6-d05babd02627?token=e1ad9947-cc9d-421b-9385-9c039ba0fbb2&filename=Data.zip -O Data.zip
 unzip Data.zip
 ```
 
